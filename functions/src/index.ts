@@ -8,7 +8,7 @@ const app = express();
 
 app.use(cors({origin: true}));
 
-app.get('/r/:slug', (req, res) => {
+app.get('/:slug', (req, res) => {
 
 		const slug = req.params.slug;
 		const doc = admin.firestore().doc(`urls/${slug}`)

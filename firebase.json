@@ -15,7 +15,7 @@
     ],
     "rewrites": [
       {
-        "source": "/r/**",
+        "source": "/**",
         "function": "redirect"
       }
     ]
