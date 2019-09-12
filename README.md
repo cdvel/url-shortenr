@@ -1,2 +1,14 @@
-# serverless-url-shortener
-Serverless shortening and redirecting service using Firebase
+# URL shortening service
+
+Store and resolve shortened urls using Firebase Cloud functions and Cloud Firestore. 
+
+
+# Deploy
+
+```
+firebase deploy
+```
+
+
+
+
