@@ -24,4 +24,18 @@ app.get('/:slug', (req, res) => {
 		})
 });
 
+app.post('/shorten', (req, res) => {
+
+		const url = req.query.url;
+		const slug = Math.random().toString(36).substr(2,5).toUpperCase();
+
+		admin.firestore().doc(`urls/${slug}`).set({url: url})
+		.then(snapshot => {
+			return res.send(slug);
+		}).catch(error => {
+			res.status(500).send(error);
+		})
+		
+});
+
 exports.redirect = functions.https.onRequest(app);
