@@ -44,7 +44,6 @@
 						<p>Your shortened URL 👇</p>
 					</div>
 					<div class="col col-md-12">
-						<!-- <a href="/" target="_blank">short link</a> -->
 						<a id="shortened-url" class="btn" href="/" role="button" target="_blank">📌📌📌</a>
 					</div>
 				</div>
@@ -66,7 +65,6 @@
 			};
 			// Initialize Firebase
 			firebase.initializeApp(firebaseConfig);
-
 			const functions = firebase.functions();
 			let form = document.querySelector("#form")
 			form.addEventListener("submit", (e) => {

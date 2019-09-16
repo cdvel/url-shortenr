@@ -8,26 +8,6 @@ const app = express();
 
 app.use(cors({origin: true}));
 
-// app.options('/:slug', (req, res) => {
-
-// 	res.set('Access-Control-Allow-Origin', 'https://shortenr.web.app');
-// 	res.set('Access-Control-Allow-Methods', 'POST');
-//     res.set('Access-Control-Allow-Headers', 'Content-Type');
-//     res.set('Access-Control-Max-Age', '3600');
-// 	res.status(204).send('');
-// });
-
-// app.options('/shorten', (req, res) => {
-
-// 	res.set('Access-Control-Allow-Origin', 'https://shortenr.web.app');
-// 	res.set('Access-Control-Allow-Methods', 'POST');
-//     res.set('Access-Control-Allow-Headers', 'Content-Type');
-//     res.set('Access-Control-Max-Age', '3600');
-// 	res.status(204).send('');
-// });
-
-
-
 app.post('/', (req, res) => {
 
 		const url = req.body.data;
