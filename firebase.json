@@ -6,7 +6,7 @@
     ]
   },
   "hosting": {
-    "site": "ushort",
+    "site": "shortcake",
     "public": "dist",
     "ignore": [
       "firebase.json",
