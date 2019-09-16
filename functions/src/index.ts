@@ -8,25 +8,40 @@ const app = express();
 
 app.use(cors({origin: true}));
 
-app.options('/', (req, res) => {
+// app.options('/:slug', (req, res) => {
 
-	res.set('Access-Control-Allow-Origin', 'https://shortcake.web.app');
-	res.set('Access-Control-Allow-Methods', 'POST');
-    res.set('Access-Control-Allow-Headers', 'Authorization');
-    res.set('Access-Control-Max-Age', '3600');
-	res.status(204).send('');
+// 	res.set('Access-Control-Allow-Origin', 'https://shortenr.web.app');
+// 	res.set('Access-Control-Allow-Methods', 'POST');
+//     res.set('Access-Control-Allow-Headers', 'Content-Type');
+//     res.set('Access-Control-Max-Age', '3600');
+// 	res.status(204).send('');
+// });
+
+// app.options('/shorten', (req, res) => {
+
+// 	res.set('Access-Control-Allow-Origin', 'https://shortenr.web.app');
+// 	res.set('Access-Control-Allow-Methods', 'POST');
+//     res.set('Access-Control-Allow-Headers', 'Content-Type');
+//     res.set('Access-Control-Max-Age', '3600');
+// 	res.status(204).send('');
+// });
+
+
+
+app.post('/', (req, res) => {
+
+		const url = req.body.data;
+		const slug = Math.random().toString(36).substr(2,5).toUpperCase();
+		res.set('Access-Control-Allow-Origin', '*');
+
+		admin.firestore().doc(`urls/${slug}`).set({url: url})
+		.then(snapshot => {
+			return res.send({data:slug});
+		}).catch(error => {
+			res.status(500).send(error);
+		})
+		
 });
-
-app.options('/shorten', (req, res) => {
-
-	res.set('Access-Control-Allow-Origin', 'https://shortcake.web.app');
-	res.set('Access-Control-Allow-Methods', 'POST');
-    res.set('Access-Control-Allow-Headers', 'Authorization');
-    res.set('Access-Control-Max-Age', '3600');
-	res.status(204).send('');
-});
-
-
 
 app.get('/:slug', (req, res) => {
 
@@ -43,49 +58,5 @@ app.get('/:slug', (req, res) => {
 			res.status(500).send(error)
 		})
 });
-
-app.post('/shorten', (req, res) => {
-
-
-	// res.set('Access-Control-Allow-Origin', '*');
-
-	//   if (req.method === 'OPTIONS') {
-	//     // Send response to OPTIONS requests
-	//     res.set('Access-Control-Allow-Methods', 'GET');
-	//     res.set('Access-Control-Allow-Headers', 'Content-Type');
-	//     res.set('Access-Control-Max-Age', '3600');
-	//     res.status(204).send('');
-	//   } 
-
-
-
-  // res.set('Access-Control-Allow-Origin', 'https://shortcake.web.app');
-  // res.set('Access-Control-Allow-Credentials', 'true');
-
-  // if (req.method === 'OPTIONS') {
-  //   // Send response to OPTIONS requests
-  //   res.set('Access-Control-Allow-Methods', 'GET');
-  //   res.set('Access-Control-Allow-Headers', 'Authorization');
-  //   res.set('Access-Control-Max-Age', '3600');
-  //   res.status(204).send('');
-  // } else {
-  //   res.send('Hello World!');
-  // }
-
-
-		const url = req.query.url;
-		const slug = Math.random().toString(36).substr(2,5).toUpperCase();
-		res.set('Access-Control-Allow-Origin', '*');
-
-		admin.firestore().doc(`urls/${slug}`).set({url: url})
-		.then(snapshot => {
-			return res.send(slug);
-		}).catch(error => {
-			res.status(500).send(error);
-		})
-		
-});
-
-
 
 exports.redirect = functions.https.onRequest(app);

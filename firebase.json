@@ -6,7 +6,7 @@
     ]
   },
   "hosting": {
-    "site": "shortcake",
+    "site": "shortenr",
     "public": "dist",
     "ignore": [
       "firebase.json",
@@ -19,5 +19,6 @@
         "function": "redirect"
       }
     ]
+
   }
 }
