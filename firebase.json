@@ -6,7 +6,7 @@
     ]
   },
   "hosting": {
-    "site": "shortenr",
+    "site": "cdv-im",
     "public": "dist",
     "ignore": [
       "firebase.json",
