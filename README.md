@@ -66,6 +66,11 @@ npm install npm@latest -g
 npm install -g firebase-tools
 ```
 
+* Login
+```sh
+firebase login
+```
+
 ### Installation
  
 1. Clone the repo
@@ -76,7 +81,22 @@ git clone https:://github.com/cdvel/url-shortenr.git
 ```sh
 npm install
 ```
-3. Deploy to an existing firebase project
+3. Create  and use your firebase project: url-shortener
+```sh
+firebase projects:create
+$ url-shortener
+
+firebase use url-shortener
+```
+
+4. Update unique hosting site on firebase.json (ex. https://shortenr.web.app)
+```json
+  "hosting": {
+    "site": "shortenr",
+
+```
+
+5. Deploy
 ```sh
 firebase deploy
 ```
@@ -101,19 +121,6 @@ See the [open issues](https://github.com/cdvel/url-shortenr/issues) for a list o
 
 
 
-<!-- CONTRIBUTING -->
-## Contributing
-
-Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**.
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-
-
 <!-- LICENSE -->
 ## License
 
@@ -124,6 +131,6 @@ Distributed under the Apache License. See `LICENSE` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@cdvel](https://twitter.com/cdvel) - email
+[https://twitter.com/cdvel](https://twitter.com/cdvel)
 
-Project Link: [https://github.com/cdvel/url-shortenr](https://github.com/cdvel/url-shortenr)
+[https://github.com/cdvel/url-shortenr](https://github.com/cdvel/url-shortenr)
