@@ -7,10 +7,13 @@
 		<link rel="stylesheet" href="https://unpkg.com/baseguide@3.2.1/dist/css/baseguide.min.css">
 		<!-- <script src="https://www.gstatic.com/firebasejs/6.6.0/firebase-functions.js"></script> -->
 		<style type="text/css">
+			body{
+				padding: 20px;
+			}
 			.row{
+				background-color: ghostwhite;
 				border: 1px solid #ccc;
-				padding: 40px 0px;
-				margin: 30px 0px;
+				padding: 50px;
 				width: 100% !important;
 				display: 'inline-flex';
 				.div{
@@ -25,26 +28,25 @@
 		</style>
 	</head>
 	<body>
-		<div id="message" class="container">
-			<h3>URL shortening service</h3>
-			<hr/>
-			<div class="container">
+		<div class="container">
+			<h1>✂️ URL Shortenr</h1>
+			<div>
 				<form id="form">
 					<div class="row">
 						<div class="col col-md-8">
-							<input id="long-url" type="text" placeholder="https://your-long-url-goes-here.com">
+							<input id="long-url" type="text" placeholder="Paste long URL here">
 						</div>
 						<div class="col col-md-4">
-							<input class="btn" type="submit" value="Shorten URL ✂️">
+							<input class="btn" type="submit" value="Shorten URL ">
 						</div>
 					</div>
 				</form>
-				<div class="row">
+				<div id="result" class="row" style="visibility: hidden;">
 					<div class="col col-md-12">
 						<p>Your shortened URL 👇</p>
 					</div>
 					<div class="col col-md-12">
-						<a id="shortened-url" class="btn" href="/" role="button" target="_blank">📌📌📌</a>
+						<a id="shortened-url" href="" role="button" target="_blank" style="font-size: xx-large;"></a>
 					</div>
 				</div>
 			</div>
@@ -72,7 +74,14 @@
 				const url = document.querySelector("#long-url").value;
 				const shorty = document.querySelector("#shortened-url");
 				const shortenFn = functions.httpsCallable('redirect');
+				document.querySelector("#result").style.visibility = 'visible';
+
+				shorty.href = '/';
+				shorty.textContent = 'Please wait ...';
+				shorty.disabled = true;
+
 				shortenFn(url).then((result) => {
+					shorty.enabled = false;
 					shorty.href = document.URL+result.data;
 					shorty.textContent = document.URL+result.data;
 				});

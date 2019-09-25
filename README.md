@@ -1,12 +1,8 @@
-<!-- PROJECT LOGO -->
 <br />
 <p align="center">
-  <a href="https://github.com/cdvel/url-shortenr">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+  <a href="https://github.com/cdvel/url-shortenr">    
+  	<h3 align="center">✂️ URL Shortenr</h3>
   </a>
-
-  <h3 align="center">URL Shortenr</h3>
-
   <p align="center">
 		Store and resolve shortened urls Firebase<br />
 <!--     <a href="https://github.com/cdvel/url-shortenr"><strong>Explore the docs »</strong></a>
