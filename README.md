@@ -38,7 +38,8 @@
 
 
 The classic URL shortening/redirecting service using free resources from Firebase (cloud functions, firestore, hosting). 
-[![Product Name Screen Shot][product-screenshot]](https://shortenr.web.app)
+
+![url shortener](https://user-images.githubusercontent.com/10421005/65597591-129b4980-dfcc-11e9-953f-5ec59b6e26e2.png)
 
 
 ### Built With
