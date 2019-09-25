@@ -30,12 +30,12 @@ app.get('/:slug', (req, res) => {
 		doc.get().then(snapshot => {
 			const redir = snapshot.data();
 			if (redir == null){	//1. manage 404
-				res.status(404).send('Not found');
+				res.redirect(301, '/home');
 			}else{
 				res.redirect(301, redir.url); //2. redirect
 			}
 		}).catch(error => {
-			res.status(500).send(error)
+			res.redirect(301, '/home');
 		})
 });
 
