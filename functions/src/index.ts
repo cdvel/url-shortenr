@@ -39,4 +39,4 @@ app.get('/:slug', (req, res) => {
 		})
 });
 
-exports.redirect = functions.https.onRequest(app);
+exports.shorten = functions.https.onRequest(app);
