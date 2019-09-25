@@ -16,7 +16,7 @@
     "rewrites": [
       {
         "source": "/**",
-        "function": "redirect"
+        "function": "shorten"
       }
     ]
 
