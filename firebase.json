@@ -18,7 +18,11 @@
         "source": "/**",
         "function": "shorten"
       }
-    ]
-
+    ],
+    "redirects": [ {
+      "source": "/",
+      "destination": "/home",
+      "type": 301
+    }]
   }
 }
