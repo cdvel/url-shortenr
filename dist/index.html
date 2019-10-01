@@ -73,8 +73,8 @@
 
 				shortenFn(url).then((result) => {
 					shorty.enabled = false;
-					shorty.href = document.URL+result.data;
-					shorty.textContent = document.URL+result.data;
+					shorty.href = 'https://' + document.location.hostname + '/' + result.data;
+					shorty.textContent = 'https://' + document.location.hostname + '/' + result.data;
 				});
 			});
 		</script>
