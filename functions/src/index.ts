@@ -32,7 +32,7 @@ app.get('/:slug', (req, res) => {
 			if (redir == null){	//1. manage 404
 				res.redirect(301, '/home');
 			}else{
-				res.redirect(301, redir.url); //2. redirect
+				res.redirect(302, encodeURI(redir.url.trim())); //2. redirect
 			}
 		}).catch(error => {
 			res.redirect(301, '/home');
