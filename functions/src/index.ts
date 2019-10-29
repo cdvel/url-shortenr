@@ -29,14 +29,31 @@ app.get('/:slug', (req, res) => {
 		const doc = admin.firestore().doc(`urls/${slug}`)
 		doc.get().then(snapshot => {
 			const redir = snapshot.data();
-			if (redir == null){	//1. manage 404
+
+			recordAnalytics(slug, req.headers);
+
+			if (redir == null){
 				res.redirect(301, '/home');
 			}else{
-				res.redirect(302, encodeURI(redir.url.trim())); //2. redirect
+				res.redirect(302, encodeURI(redir.url.trim()));
 			}
 		}).catch(error => {
 			res.redirect(301, '/home');
 		})
 });
 
+function recordAnalytics(slug: string, headers: any){
+
+	const timestamp = Date.now().toString();
+	const payload = {
+		'slug': slug,
+		'lang': headers['accept-language'] || null,
+		'user-agent': headers['user-agent'] || null,
+		'ip': headers['fastly-client-ip'] || null
+	};
+	admin.firestore().doc(`clicks/${timestamp}`).set(payload).then(snp =>{return null;}).catch(error =>{return null;});
+};
+
 exports.shorten = functions.https.onRequest(app);
+
+
