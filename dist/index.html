@@ -31,7 +31,7 @@
 		<div class="container">
 			<h1>✂️ URL Shortenr</h1>
 			<div>
-				<form id="form">
+				<form id="main-form">
 					<div class="row">
 						<div class="col col-md-8">
 							<input id="long-url" type="text" placeholder="Paste long URL here">
@@ -55,11 +55,44 @@
 		<!-- <script src="/__/firebase/6.6.0/firebase-app.js"></script> -->
 		<script src="https://www.gstatic.com/firebasejs/6.6.0/firebase-app.js"></script>
 		<script src="https://www.gstatic.com/firebasejs/6.6.0/firebase-functions.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/6.6.0/firebase-auth.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/6.6.0/firebase-firestore.js"></script>
 		<script src="/__/firebase/init.js"></script>
 		<script type="text/javascript">
+
+        var ui = new firebaseui.auth.AuthUI(firebase.auth());
+        ui.start('#firebaseui-auth-container', {
+            callbacks: {
+                signInSuccessWithAuthResult: function(authResult, redirectUrl) {
+
+                    if (firebase.auth().currentUser.email == functions.config().authorized.email){
+                        var form = document.getElementById('main-form');
+                        form.removeAttribute('hidden');
+                        console.log('signInSuccessWithAuthResult');
+                    }else{
+                        firebase.auth().signOut()
+                          .then(function() {
+                            alert('Unauthorized! Reload and try again');
+                          })
+                          .catch(function(error) {
+                            alert('Something went wrong!');
+                          });                        
+                    }
+                    return false;
+                }
+            },
+
+            signInOptions: [
+                // List of OAuth providers supported.
+                firebase.auth.GoogleAuthProvider.PROVIDER_ID
+            ],
+            // Other config options...
+        });
+
+
 			// const functions = require('firebase-functions');
 			const functions = firebase.functions();
-			let form = document.querySelector("#form")
+			let form = document.querySelector("#main-form")
 			form.addEventListener("submit", (e) => {
 				e.preventDefault();
 				const url = document.querySelector("#long-url").value;
