@@ -1,82 +1,179 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title>url shortener</title>
-		<link rel="stylesheet" href="https://unpkg.com/baseguide@3.2.1/dist/css/baseguide.min.css">
-		<!-- <script src="https://www.gstatic.com/firebasejs/6.6.0/firebase-functions.js"></script> -->
-		<style type="text/css">
-			body{
-				padding: 20px;
-			}
-			.row{
-				background-color: ghostwhite;
-				border: 1px solid #ccc;
-				padding: 50px;
-				width: 100% !important;
-				display: 'inline-flex';
-				.div{
-					padding: 0px 10px;
-				}
-			}
-			@media only screen and (max-width: 600px) {
-				.row{
-					width: 100% !important;
-				}
-			}
-		</style>
-	</head>
-	<body>
-		<div class="container">
-			<h1>✂️ URL Shortenr</h1>
-			<div>
-				<form id="form">
-					<div class="row">
-						<div class="col col-md-8">
-							<input id="long-url" type="text" placeholder="Paste long URL here">
-						</div>
-						<div class="col col-md-4">
-							<input class="btn" type="submit" value="Shorten URL ">
-						</div>
-					</div>
-				</form>
-				<div id="result" class="row" style="visibility: hidden;">
-					<div class="col col-md-12">
-						<p>Your shortened URL 👇</p>
-					</div>
-					<div class="col col-md-12">
-						<a id="shortened-url" href="" role="button" target="_blank" style="font-size: xx-large;"></a>
-					</div>
-				</div>
-			</div>
-		</div>
-		<!-- The core Firebase JS SDK is always required and must be listed first -->
-		<!-- <script src="/__/firebase/6.6.0/firebase-app.js"></script> -->
-		<script src="https://www.gstatic.com/firebasejs/6.6.0/firebase-app.js"></script>
-		<script src="https://www.gstatic.com/firebasejs/6.6.0/firebase-functions.js"></script>
-		<script src="/__/firebase/init.js"></script>
-		<script type="text/javascript">
-			// const functions = require('firebase-functions');
-			const functions = firebase.functions();
-			let form = document.querySelector("#form")
-			form.addEventListener("submit", (e) => {
-				e.preventDefault();
-				const url = document.querySelector("#long-url").value;
-				const shorty = document.querySelector("#shortened-url");
-				const shortenFn = functions.httpsCallable('shorten');
-				document.querySelector("#result").style.visibility = 'visible';
 
-				shorty.href = '/';
-				shorty.textContent = 'Please wait ...';
-				shorty.disabled = true;
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>url shortener</title>
+    <link rel="stylesheet" href="https://unpkg.com/baseguide@3.2.1/dist/css/baseguide.min.css">
+    <!-- <script src="https://www.gstatic.com/firebasejs/6.6.0/firebase-functions.js"></script> -->
+    <style type="text/css">
+    body {
+        padding: 20px;
+    }
 
-				shortenFn(url).then((result) => {
-					shorty.enabled = false;
-					shorty.href = 'https://' + document.location.hostname + '/' + result.data;
-					shorty.textContent = 'https://' + document.location.hostname + '/' + result.data;
-				});
-			});
-		</script>
-	</body>
+    .row {
+        background-color: ghostwhite;
+        border: 1px solid #ccc;
+        padding: 50px;
+        width: 100% !important;
+        display: 'inline-flex';
+
+        .div {
+            padding: 0px 10px;
+        }
+    }
+
+    @media only screen and (max-width: 600px) {
+        .row {
+            width: 100% !important;
+        }
+    }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div id="firebaseui-auth-container"></div>
+        <h1>✂️ URL Shortenr</h1>
+        <div>
+            <form id="form">
+                <div class="row">
+                    <div class="col col-md-8">
+                        <input id="long-url" type="text" placeholder="Paste long URL here">
+                    </div>
+                    <div class="col col-md-4">
+                        <input class="btn" type="submit" value="Shorten URL ">
+                    </div>
+                </div>
+            </form>
+            <div id="result" class="row" style="visibility: hidden;">
+                <div class="col col-md-12">
+                    <p>Your shortened URL 👇</p>
+                </div>
+                <div class="col col-md-12">
+                    <a id="shortened-url" href="" role="button" target="_blank" style="font-size: xx-large;"></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <!-- <script src="/__/firebase/6.6.0/firebase-app.js"></script> -->
+    <script src="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css" />
+    <script src="https://www.gstatic.com/firebasejs/6.6.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/6.6.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/6.6.0/firebase-messaging.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/6.6.0/firebase-firestore.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/6.6.0/firebase-functions.js"></script>
+    <!-- <script src="/__/firebase/init.js"></script> -->
+    <script type="text/javascript">
+
+     const functions = firebase.functions();
+
+      // Your web app's Firebase configuration
+      var firebaseConfig = {
+        //TODO: fill in
+      };
+      // Initialize Firebase
+      const getConfig = functions.httpsCallable('getConfig');
+      
+      firebaseConfig = getConfig().then((res) => {
+        return res;
+      });
+
+      if (firebase.apps.length > 0){
+          console.log('using', firebase.apps);
+          firebase.app();
+      }else{
+            console.log('initializeApp');
+          firebase.initializeApp(firebaseConfig);
+
+      }
+
+
+
+      //   // firebase.apps.length 
+      // firebase.app();
+      // firebase.initializeApp(firebaseConfig);
+
+      firebase.analytics();
+
+
+
+    function requestNotificationsPermissions() {
+        console.log('Requesting notifications permission...');
+        firebase.messaging().requestPermission().then(function() {
+            // Notification permission granted.
+            saveMessagingDeviceToken();
+            
+        }).catch(function(error) {
+            console.error('Unable to get permission to notify.', error);
+        });
+    };
+
+    function saveMessagingDeviceToken() {
+        firebase.messaging().getToken().then(function(currentToken) {
+            if (currentToken) {
+                console.log('Got FCM device token:', currentToken);
+                // Saving the Device Token to the datastore.
+                firebase.firestore().collection('fcmTokens').doc(currentToken)
+                    .set({ uid: firebase.auth().currentUser.uid });
+            } else {
+                // Need to request permissions to show notifications.
+                requestNotificationsPermissions();
+            }
+        }).catch(function(error) {
+            console.error('Unable to get messaging token.', error);
+        });
+    };
+
+
+
+    var ui = new firebaseui.auth.AuthUI(firebase.auth());
+    ui.start('#firebaseui-auth-container', {
+        callbacks: {
+            signInSuccessWithAuthResult: function(authResult, redirectUrl) {
+                // User successfully signed in.
+                // Return type determines whether we continue the redirect automatically
+                // or whether we leave that to developer to handle.
+                firebase.messaging();
+                saveMessagingDeviceToken();
+                console.log('signInSuccessWithAuthResult');
+                return false;
+            }
+        },
+
+        signInOptions: [
+            // List of OAuth providers supported.
+            firebase.auth.GoogleAuthProvider.PROVIDER_ID
+        ],
+        // Other config options...
+    });
+
+
+
+    // const functions = require('firebase-functions');
+    let form = document.querySelector("#form")
+    form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const url = document.querySelector("#long-url").value;
+    const shorty = document.querySelector("#shortened-url");
+    const shortenFn = functions.httpsCallable('shorten');
+    document.querySelector("#result").style.visibility = 'visible';
+
+    shorty.href = '/';
+    shorty.textContent = 'Please wait ...';
+    shorty.disabled = true;
+
+    shortenFn(url).then((result) => {
+        shorty.enabled = false;
+        shorty.href = 'https://' + document.location.hostname + '/' + result.data;
+        shorty.textContent = 'https://' + document.location.hostname + '/' + result.data;
+    });    
+});
+    </script>
+</body>
+
 </html>

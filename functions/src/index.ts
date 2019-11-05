@@ -54,6 +54,59 @@ function recordAnalytics(slug: string, headers: any){
 	admin.firestore().doc(`clicks/${timestamp}`).set(payload).then(snp =>{return null;}).catch(error =>{return null;});
 };
 
+exports.getConfig = function(){
+
+	return functions.config().firebase; 
+}
+
+exports.sendNotifications = functions.firestore.document('clicks/{click_id}').onCreate(
+
+
+	async (snapshot) => {
+
+		console.log('notifications pipeline started');
+		// const text = snapshot.data().text;
+
+		let ip_val = 'unknown';
+		let slug_val = 'none';
+		const data_val = snapshot.data();
+
+		if (data_val){
+			ip_val = data_val.ip;
+			slug_val = data_val.slug;
+		}
+		const payload = {
+			notification: {
+				title: `${ip_val} clicked ${slug_val}`,
+				body: `${ip_val} clicked ${slug_val}`, 
+				// icon: snapshot.data().profilePicUrl || 'images/profile_placeholder.png',
+				// click_action: `https://${process.env.GCLOUD_PROJECT}.firebaseapp.com`,
+			}
+		}
+		//device tokens
+		const allTokens = await admin.firestore().collection('fcmTokens').get();
+		const tokens = Array();
+		allTokens.forEach((tokenDoc) => {
+			let id = tokenDoc.id.split(':')[1];
+			tokenDoc.id
+			console.log('target: ', tokenDoc.id);
+
+			console.log('sending to: ', id);
+			tokens.push(id);
+		});
+
+		if(tokens.length > 0){
+			const response = await admin.messaging().sendToDevice(tokens, payload);
+			// await cleanupTokens(response, tokens);
+			console.log('notifications have been sent and tokens cleaned up.', response.results);
+			return response;
+		}
+
+		return null;
+
+	});
+
+
 exports.shorten = functions.https.onRequest(app);
 
 
