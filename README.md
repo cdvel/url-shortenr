@@ -97,10 +97,16 @@ firebase use url-shortener
 
 ```
 
-5. Deploy
+5. Set your authorized google email to access the shortener with
+```sh
+firebase functions:config:set authorized.email="your-email@gmail.com"
+```
+
+6. Deploy
 ```sh
 firebase deploy
 ```
+
 
 
 <!-- USAGE EXAMPLES -->
