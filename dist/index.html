@@ -5,6 +5,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>url shortener</title>
 		<link rel="stylesheet" href="https://unpkg.com/baseguide@3.2.1/dist/css/baseguide.min.css">
+		<link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css" />
 		<!-- <script src="https://www.gstatic.com/firebasejs/6.6.0/firebase-functions.js"></script> -->
 		<style type="text/css">
 			body{
@@ -29,9 +30,11 @@
 	</head>
 	<body>
 		<div class="container">
-			<h1>✂️ URL Shortenr</h1>
-			<div>
-				<form id="main-form">
+			<h3>✂️ URL Shortenr</h3>
+			<hr/>
+			<div id="firebaseui-auth-container"></div>
+			<div id="main-form" hidden>
+				<form id="short-form">
 					<div class="row">
 						<div class="col col-md-8">
 							<input id="long-url" type="text" placeholder="Paste long URL here">
@@ -49,10 +52,15 @@
 						<a id="shortened-url" href="" role="button" target="_blank" style="font-size: xx-large;"></a>
 					</div>
 				</div>
+				<div>
+					<h4>Top visits</h4>
+					<ul></ul>
+				</div>
 			</div>
 		</div>
 		<!-- The core Firebase JS SDK is always required and must be listed first -->
 		<!-- <script src="/__/firebase/6.6.0/firebase-app.js"></script> -->
+		<script src="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.js"></script>	
 		<script src="https://www.gstatic.com/firebasejs/6.6.0/firebase-app.js"></script>
 		<script src="https://www.gstatic.com/firebasejs/6.6.0/firebase-functions.js"></script>
         <script src="https://www.gstatic.com/firebasejs/6.6.0/firebase-auth.js"></script>
@@ -60,24 +68,31 @@
 		<script src="/__/firebase/init.js"></script>
 		<script type="text/javascript">
 
+		const functions = firebase.functions();
+		const authorized = functions.httpsCallable('authorized');
+
+
         var ui = new firebaseui.auth.AuthUI(firebase.auth());
         ui.start('#firebaseui-auth-container', {
             callbacks: {
                 signInSuccessWithAuthResult: function(authResult, redirectUrl) {
 
-                    if (firebase.auth().currentUser.email == functions.config().authorized.email){
-                        var form = document.getElementById('main-form');
-                        form.removeAttribute('hidden');
-                        console.log('signInSuccessWithAuthResult');
-                    }else{
-                        firebase.auth().signOut()
-                          .then(function() {
-                            alert('Unauthorized! Reload and try again');
-                          })
-                          .catch(function(error) {
-                            alert('Something went wrong!');
-                          });                        
-                    }
+                	authorized().then(function(result){
+	                	if(result.data){
+							var form = document.getElementById('main-form');
+                        	form.removeAttribute('hidden');
+                        	console.log('signInSuccessWithAuthResult');	
+	                	}else{
+	                		firebase.auth().signOut()
+	                          .then(function() {
+	                            alert('Unauthorized! Reload and try again');
+	                          })
+	                          .catch(function(error) {
+	                            alert('Something went wrong!');
+	                          }); 
+	                	}
+                	});
+
                     return false;
                 }
             },
@@ -88,28 +103,23 @@
             ],
             // Other config options...
         });
-
-
-			// const functions = require('firebase-functions');
-			const functions = firebase.functions();
-			let form = document.querySelector("#main-form")
-			form.addEventListener("submit", (e) => {
-				e.preventDefault();
-				const url = document.querySelector("#long-url").value;
-				const shorty = document.querySelector("#shortened-url");
-				const shortenFn = functions.httpsCallable('shorten');
-				document.querySelector("#result").style.visibility = 'visible';
-
-				shorty.href = '/';
-				shorty.textContent = 'Please wait ...';
-				shorty.disabled = true;
-
-				shortenFn(url).then((result) => {
-					shorty.enabled = false;
-					shorty.href = 'https://' + document.location.hostname + '/' + result.data;
-					shorty.textContent = 'https://' + document.location.hostname + '/' + result.data;
-				});
+		
+		let form = document.querySelector("#main-form")
+		form.addEventListener("submit", (e) => {
+			e.preventDefault();
+			const url = document.querySelector("#long-url").value;
+			const shorty = document.querySelector("#shortened-url");
+			const shorten = functions.httpsCallable('shorten');
+			document.querySelector("#result").style.visibility = 'visible';
+			shorty.href = '/';
+			shorty.textContent = 'Please wait ...';
+			shorty.disabled = true;
+			shorten(url).then((result) => {
+				shorty.enabled = false;
+				shorty.href = 'https://' + document.location.hostname + '/' + result.data;
+				shorty.textContent = 'https://' + document.location.hostname + '/' + result.data;
 			});
+		});
 		</script>
 	</body>
 </html>
