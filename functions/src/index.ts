@@ -54,6 +54,11 @@ function recordAnalytics(slug: string, headers: any){
 	admin.firestore().doc(`clicks/${timestamp}`).set(payload).then(snp =>{return null;}).catch(error =>{return null;});
 };
 
+exports.authorized = functions.https.onCall((data, context) => {
+	console.log("context", context);
+  return context.auth!.token.email == functions.config().authorized.email;
+});
+
 exports.shorten = functions.https.onRequest(app);
 
 
