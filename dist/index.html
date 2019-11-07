@@ -4,8 +4,10 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>url shortener</title>
+		<link rel="icon" href="data:,">
 		<link rel="stylesheet" href="https://unpkg.com/baseguide@3.2.1/dist/css/baseguide.min.css">
 		<link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css" />
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
 		<!-- <script src="https://www.gstatic.com/firebasejs/6.6.0/firebase-functions.js"></script> -->
 		<style type="text/css">
 			body{
@@ -42,19 +44,20 @@
 						<div class="col col-md-4">
 							<input class="btn" type="submit" value="Shorten URL ">
 						</div>
+						<div class="col col-md-12" id="result" style="visibility: hidden;">
+							<hr/>
+							<span>Your shortened URL 👉</span> 
+							<a id="shortened-url" href="" role="button" target="_blank" style="font-size: large;"></a>
+						</div>
 					</div>
+
 				</form>
-				<div id="result" class="row" style="visibility: hidden;">
-					<div class="col col-md-12">
-						<p>Your shortened URL 👇</p>
-					</div>
-					<div class="col col-md-12">
-						<a id="shortened-url" href="" role="button" target="_blank" style="font-size: xx-large;"></a>
-					</div>
-				</div>
-				<div>
-					<h4>Top visits</h4>
-					<ul></ul>
+				<h4>Last visits</h4>
+				<div class="table-responsive" style="font-size: small;">
+					<table class="table">
+						<tbody id="top-clicks">
+						</tbody>
+					</table>
 				</div>
 			</div>
 		</div>
@@ -70,6 +73,7 @@
 
 		const functions = firebase.functions();
 		const authorized = functions.httpsCallable('authorized');
+		const get_clicks = functions.httpsCallable('getClicks');
 
 
         var ui = new firebaseui.auth.AuthUI(firebase.auth());
@@ -79,9 +83,36 @@
 
                 	authorized().then(function(result){
 	                	if(result.data){
-							var form = document.getElementById('main-form');
-                        	form.removeAttribute('hidden');
+							var main = document.getElementById('main-form');
+                        	main.removeAttribute('hidden');
+							var top_clicks = document.getElementById('top-clicks');
                         	console.log('signInSuccessWithAuthResult');	
+                        	get_clicks().then(function(result){
+                        		var rows = result.data;
+                        		for (k in rows){
+                        			var tr = document.createElement('tr');
+
+	                        		var td = document.createElement('time');
+	                        		var ts = rows[k].timestamp;
+	                        		var dt = new Date(ts._seconds * 1000);
+    	                    		td.appendChild(document.createTextNode(moment(dt).format('lll')));
+    	                    		tr.appendChild(td);
+
+    	                    		td = document.createElement('td');
+    	                    		td.appendChild(document.createTextNode(rows[k].slug));
+    	                    		tr.appendChild(td);
+
+	                        		var td = document.createElement('td');
+    	                    		td.appendChild(document.createTextNode(rows[k].ip));
+    	                    		tr.appendChild(td);
+
+	                        		var td = document.createElement('td');
+    	                    		td.appendChild(document.createTextNode(rows[k]['user-agent']));
+    	                    		tr.appendChild(td);
+
+    	                    		top_clicks.appendChild(tr);                        			
+                        		}
+                        	});
 	                	}else{
 	                		firebase.auth().signOut()
 	                          .then(function() {

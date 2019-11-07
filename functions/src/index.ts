@@ -44,18 +44,39 @@ app.get('/:slug', (req, res) => {
 
 function recordAnalytics(slug: string, headers: any){
 
+	if (slug in ['favicon.ico', 'robots.txt']){
+		return;
+	}
+
 	const timestamp = Date.now().toString();
 	const payload = {
 		'slug': slug,
 		'lang': headers['accept-language'] || null,
 		'user-agent': headers['user-agent'] || null,
-		'ip': headers['fastly-client-ip'] || null
+		'ip': headers['fastly-client-ip'] || null,
+		'timestamp': new Date()
 	};
 	admin.firestore().doc(`clicks/${timestamp}`).set(payload).then(snp =>{return null;}).catch(error =>{return null;});
 };
 
+exports.getClicks = functions.https.onCall((dta, context) => {
+		let result = Array();
+		const query = admin.firestore().collection('clicks').orderBy('timestamp', 'desc').limit(10);
+		return query.get().then(querySnapshot => {
+			querySnapshot.forEach(function(doc) {
+				var c = doc.data()
+    	        // c.timestamp = c.timestamp.toDate();
+    	        result.push(c);
+	        });
+			return result;
+			
+		}).catch(error => {
+			console.log('failed to get clicks' + error.message);
+		});
+});
+
+
 exports.authorized = functions.https.onCall((data, context) => {
-	console.log("context", context);
   return context.auth!.token.email == functions.config().authorized.email;
 });
 
