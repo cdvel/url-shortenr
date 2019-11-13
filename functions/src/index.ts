@@ -30,7 +30,7 @@ app.get('/:slug', (req, res) => {
 		doc.get().then(snapshot => {
 			const redir = snapshot.data();
 
-			recordAnalytics(slug, req.headers);
+			// recordAnalytics(slug, req.headers);
 
 			if (redir == null){
 				res.redirect(301, '/home');
@@ -62,17 +62,17 @@ function recordAnalytics(slug: string, headers: any){
 exports.getClicks = functions.https.onCall((dta, context) => {
 		let result = Array();
 		const query = admin.firestore().collection('clicks').orderBy('timestamp', 'desc').limit(10);
-		return query.get().then(querySnapshot => {
-			querySnapshot.forEach(function(doc) {
-				var c = doc.data()
-    	        // c.timestamp = c.timestamp.toDate();
-    	        result.push(c);
-	        });
+		// return query.get().then(querySnapshot => {
+		// 	querySnapshot.forEach(function(doc) {
+		// 		var c = doc.data()
+  //   	        // c.timestamp = c.timestamp.toDate();
+  //   	        result.push(c);
+	 //        });
 			return result;
 			
-		}).catch(error => {
-			console.log('failed to get clicks' + error.message);
-		});
+		// }).catch(error => {
+		// 	console.log('failed to get clicks' + error.message);
+		// });
 });
 
 
