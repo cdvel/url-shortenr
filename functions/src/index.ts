@@ -42,26 +42,26 @@ app.get('/:slug', (req, res) => {
 		})
 });
 
-function recordAnalytics(slug: string, headers: any){
+// function recordAnalytics(slug: string, headers: any){
 
-	if (slug in ['favicon.ico', 'robots.txt']){
-		return;
-	}
+// 	if (slug in ['favicon.ico', 'robots.txt']){
+// 		return;
+// 	}
 
-	const timestamp = Date.now().toString();
-	const payload = {
-		'slug': slug,
-		'lang': headers['accept-language'] || null,
-		'user-agent': headers['user-agent'] || null,
-		'ip': headers['fastly-client-ip'] || null,
-		'timestamp': new Date()
-	};
-	admin.firestore().doc(`clicks/${timestamp}`).set(payload).then(snp =>{return null;}).catch(error =>{return null;});
-};
+// 	const timestamp = Date.now().toString();
+// 	const payload = {
+// 		'slug': slug,
+// 		'lang': headers['accept-language'] || null,
+// 		'user-agent': headers['user-agent'] || null,
+// 		'ip': headers['fastly-client-ip'] || null,
+// 		'timestamp': new Date()
+// 	};
+// 	admin.firestore().doc(`clicks/${timestamp}`).set(payload).then(snp =>{return null;}).catch(error =>{return null;});
+// };
 
 exports.getClicks = functions.https.onCall((dta, context) => {
 		let result = Array();
-		const query = admin.firestore().collection('clicks').orderBy('timestamp', 'desc').limit(10);
+		// const query = admin.firestore().collection('clicks').orderBy('timestamp', 'desc').limit(10);
 		// return query.get().then(querySnapshot => {
 		// 	querySnapshot.forEach(function(doc) {
 		// 		var c = doc.data()
